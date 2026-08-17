@@ -1,0 +1,14 @@
+{
+  "name": "sleep-treat-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Production-ready multi-page website for the Sleep Treat final-year Food Science project.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^7.1.0"
+  }
+}
