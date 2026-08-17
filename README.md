@@ -22,11 +22,12 @@ Use `npm run build` to create the production files in `dist/`.
 
 ## Before public launch
 
-- Replace every bracketed placeholder with verified, approved information.
+- Replace all remaining “in review” product copy with verified, approved information.
 - Confirm the elemental magnesium quantity per serving and the basis for that value.
-- Confirm the full ingredient statement, allergen declaration, storage guidance and price.
+- Match the literature-informed ingredient descriptions to the final recipe and supplier specifications.
+- Confirm the full ingredient statement, allergen declaration, storage guidance, shelf life and price.
 - Obtain written approval for every testimonial or remove the reviews section.
-- Add the final team, development and ingredient photography.
+- Add the approved team names, roles and portrait, and confirm photography credits or consent.
 - Connect the contact form to an approved form service.
 - Review the packaging claim “HIGH IN MAGNESIUM” against the final verified formulation and applicable rules before public deployment.
 
