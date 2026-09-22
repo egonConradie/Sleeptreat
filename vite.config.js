@@ -9,8 +9,8 @@ export default defineConfig({
         home: resolve(import.meta.dirname, "index.html"),
         shop: resolve(import.meta.dirname, "shop.html"),
         gallery: resolve(import.meta.dirname, "gallery.html"),
-        contact: resolve(import.meta.dirname, "contact.html")
-      }
-    }
-  }
+        contact: resolve(import.meta.dirname, "contact.html"),
+      },
+    },
+  },
 });
