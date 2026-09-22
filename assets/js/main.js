@@ -26,17 +26,19 @@ if (mobileNav) mobileNav.inert = true;
 
 function setMenu(open) {
   if (!menuToggle || !mobileNav) return;
+  const focusWasInMenu = document.activeElement && mobileNav.contains(document.activeElement);
   menuToggle.setAttribute("aria-expanded", String(open));
   menuToggle.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
   mobileNav.classList.toggle("is-open", open);
-  mobileNav.inert = !open;
   document.body.classList.toggle("menu-open", open);
 
   if (open) {
+    mobileNav.inert = false;
     syncMobileNavPosition();
     mobileNav.querySelector("a")?.focus();
-  } else if (document.activeElement && mobileNav.contains(document.activeElement)) {
-    menuToggle.focus();
+  } else {
+    if (focusWasInMenu) menuToggle.focus();
+    mobileNav.inert = true;
   }
 }
 
@@ -57,9 +59,11 @@ document.addEventListener("keydown", (event) => {
     const menuLinks = Array.from(mobileNav.querySelectorAll("a"));
     const focusLoop = [menuToggle, ...menuLinks];
     const currentIndex = focusLoop.indexOf(document.activeElement);
-    const nextIndex = event.shiftKey
-      ? (currentIndex - 1 + focusLoop.length) % focusLoop.length
-      : (currentIndex + 1) % focusLoop.length;
+    const nextIndex = currentIndex === -1
+      ? event.shiftKey ? focusLoop.length - 1 : 0
+      : event.shiftKey
+        ? (currentIndex - 1 + focusLoop.length) % focusLoop.length
+        : (currentIndex + 1) % focusLoop.length;
 
     event.preventDefault();
     focusLoop[nextIndex].focus();
@@ -76,49 +80,6 @@ document.querySelectorAll("[data-year]").forEach((node) => {
   node.textContent = new Date().getFullYear();
 });
 
-const reviewTrack = document.querySelector("[data-review-track]");
-const reviewSlides = Array.from(document.querySelectorAll("[data-review-slide]"));
-const reviewDots = Array.from(document.querySelectorAll("[data-review-dot]"));
-let reviewIndex = 0;
-
-function showReview(index) {
-  if (!reviewTrack || !reviewSlides.length) return;
-  reviewIndex = (index + reviewSlides.length) % reviewSlides.length;
-  reviewTrack.style.transform = `translateX(-${reviewIndex * 100}%)`;
-  reviewSlides.forEach((slide, slideIndex) => {
-    slide.setAttribute("aria-hidden", String(slideIndex !== reviewIndex));
-  });
-  reviewDots.forEach((dot, dotIndex) => {
-    dot.setAttribute("aria-current", String(dotIndex === reviewIndex));
-  });
-}
-
-document.querySelector("[data-review-prev]")?.addEventListener("click", () => showReview(reviewIndex - 1));
-document.querySelector("[data-review-next]")?.addEventListener("click", () => showReview(reviewIndex + 1));
-reviewDots.forEach((dot, index) => dot.addEventListener("click", () => showReview(index)));
-if (reviewTrack) showReview(0);
-
-const ingredientNodes = Array.from(document.querySelectorAll("[data-ingredient-node]"));
-const ingredientTitle = document.querySelector("[data-ingredient-title]");
-const ingredientSummary = document.querySelector("[data-ingredient-summary]");
-const ingredientDetail = document.querySelector("[data-ingredient-detail]");
-
-function selectIngredient(node) {
-  ingredientNodes.forEach((item) => {
-    const active = item === node;
-    item.classList.toggle("is-active", active);
-    item.setAttribute("aria-pressed", String(active));
-  });
-
-  if (ingredientTitle) ingredientTitle.textContent = node.dataset.name;
-  if (ingredientSummary) ingredientSummary.textContent = node.dataset.summary;
-  if (ingredientDetail) ingredientDetail.textContent = node.dataset.detail;
-}
-
-ingredientNodes.forEach((node) => {
-  node.addEventListener("click", () => selectIngredient(node));
-});
-
 const contactForm = document.querySelector("[data-contact-form]");
 
 function setFieldError(field, message) {
@@ -133,7 +94,7 @@ contactForm?.addEventListener("input", (event) => {
   if (field.getAttribute("aria-invalid") === "true") setFieldError(field, "");
 
   const status = contactForm.querySelector("[data-form-status]");
-  if (status?.textContent === "Please check the highlighted fields.") status.textContent = "";
+  if (status?.textContent) status.textContent = "";
 });
 
 contactForm?.addEventListener("submit", (event) => {
